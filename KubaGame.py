@@ -1,6 +1,6 @@
 class KubaGame:
     """Represents a KubaGame object with game mechanics."""
-    
+
     def __init__(self, player1, player2):
         """Creates a KubaGame with players, a board, and a marble count."""
         self._players = [player1, player2]
