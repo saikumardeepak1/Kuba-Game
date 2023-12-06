@@ -36,8 +36,8 @@ For detailed information on the game mechanics and the methods available in the 
 KubaGame is released under the [MIT License](/LICENSE).
 
 ## Authors
-- [Your Name](your-profile-link)
-- [Contributor Name](contributor-profile-link)
+- Deepak Saikumar Lukulapu
+- Monika Kaminei
 
 ## Acknowledgments
 - This project is completely inspired by Internet.
