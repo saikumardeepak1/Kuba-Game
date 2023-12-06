@@ -279,3 +279,72 @@ class KubaGame:
         total_red = self._player_banks[0][0] + self._player_banks[1][0]
 
         return total_white, total_black, total_red
+    def play_game(self):
+        """Start and manage the Kuba game."""
+        print("\nWelcome to Kuba!")
+        self._print_board()
+
+        while not self._winner:
+            self._print_player_turn()
+            self._print_marble_count()
+
+            try:
+                player_name = self.get_current_turn()
+                coordinates = tuple(map(int, input("Enter coordinates (row, column): ").split(',')))
+                direction = input("Enter direction (F/B/L/R): ").upper()
+
+                move_successful = self.make_move(player_name, coordinates, direction)
+                self._print_feedback(move_successful)
+
+                if move_successful:
+                    self._print_board()
+                    self._print_captured(player_name)
+
+            except ValueError as e:
+                print(f"Error: {e}. Please try again.")
+
+        self._print_winner()
+
+    def _print_board(self):
+        """Print the current state of the game board."""
+        print("\nCurrent Board:")
+        for row in self._board:
+            print(" ".join(row))
+        print()
+
+    def _print_player_turn(self):
+        """Print the current player's turn."""
+        print(f"{self._current_player}'s turn.")
+
+    def _print_winner(self):
+        """Print the winner of the game."""
+        if self._winner:
+            print(f"\nCongratulations, {self._winner}! You won!")
+        else:
+            print("\nThe game is a draw.")
+
+    def _print_captured(self, player_name):
+        """Print the number of Red marbles captured by the given player."""
+        captured_count = self.get_captured(player_name)
+        print(f"{player_name} has captured {captured_count} Red marbles.")
+
+    def _print_marble_count(self):
+        """Print the total count of white, black, and red marbles."""
+        total_white, total_black, total_red = self.get_marble_count()
+        print(f"\nMarble Count - White: {total_white}, Black: {total_black}, Red: {total_red}")
+
+    def _print_feedback(self, move_successful):
+        """Print feedback based on the success of the move."""
+        if move_successful:
+            print("Move successful!")
+        else:
+            print("Invalid move. Please try again.")
+
+
+if __name__ == "__main__":
+    player1 = ("Player1", ["White", 8])  # existing code
+    player2 = ("Player2", ["Black", 8])  # existing code
+    game = KubaGame(player1, player2)
+    game.play_game()
+
+    
