@@ -3,8 +3,8 @@ class KubaGame:
     
     def __init__(self, player1, player2):
         """Creates a KubaGame with players, a board, and a marble count."""
-        self._player1, self._player2 = player1, player2
-        self._player1_bank, self._player2_bank = [0, 0], [0, 0]
+        self._players = [player1, player2]
+        self._player_banks = [[0, 0], [0, 0]]
         self._current_player, self._board = None, [
             ["W", "W", "X", "X", "X", "B", "B"],
             ["W", "W", "X", "R", "X", "B", "B"],
@@ -14,14 +14,14 @@ class KubaGame:
             ["B", "B", "X", "R", "X", "W", "W"],
             ["B", "B", "X", "X", "X", "W", "W"]
         ]
-        self._p1_prev_board, self._p2_prev_board = [], []
+        self._prev_boards = [None, None]
         self._winner = None
         self._initialize_prev_boards()
 
     def _initialize_prev_boards(self):
         """Initialize previous boards for both players."""
-        self._p1_prev_board = [row[:] for row in self._board]
-        self._p2_prev_board = [row[:] for row in self._board]
+        self._prev_boards[0] = [row[:] for row in self._board]
+        self._prev_boards[1] = [row[:] for row in self._board]
 
     def _set_current_player(self, player_name):
         """Set the current player if it's the first move."""
@@ -58,10 +58,9 @@ class KubaGame:
 
     def _get_player_info(self, player_name):
         """Get player information based on the provided player name."""
-        if player_name == self._player1[0]:
-            return self._player1, self._player1[1]
-        elif player_name == self._player2[0]:
-            return self._player2, self._player2[1]
+        for player in self._players:
+            if player[0] == player_name:
+                return player
 
     def _validate_move(self, player, coordinates, direction):
         """Validate if the move is legal."""
@@ -200,7 +199,7 @@ class KubaGame:
 
     def _check_ko_rule(self, player):
         """Check the ko rule to ensure the move is valid."""
-        prev_board = self._p1_prev_board if player[0] == self._player1[0] else self._p2_prev_board
+        prev_board = self._prev_boards[0] if player[0] == self._players[0][0] else self._prev_boards[1]
         if prev_board == self._board:
             self._restore_board(player)
             return False
@@ -210,10 +209,10 @@ class KubaGame:
 
     def _restore_board(self, player):
         """Restore the board to its previous state."""
-        if player[0] == self._player1[0]:
-            self._board = [row[:] for row in self._p1_prev_board]
+        if player[0] == self._players[0][0]:
+            self._board = [row[:] for row in self._prev_boards[0]]
         else:
-            self._board = [row[:] for row in self._p2_prev_board]
+            self._board = [row[:] for row in self._prev_boards[1]]
 
     def _check_winner(self, player, captured_marble):
         """Check if there is a winner based on the move."""
@@ -229,11 +228,11 @@ class KubaGame:
 
     def _get_opponent(self, player):
         """Get the opponent's information."""
-        return self._player1 if player[0] == self._player2[0] else self._player2
+        return self._players[0] if player[0] == self._players[1][0] else self._players[1]
 
     def _switch_turn(self):
         """Switch the turn to the next player."""
-        self._current_player = self._player2[0] if self._current_player == self._player1[0] else self._player1[0]
+        self._current_player = self._players[1][0] if self._current_player == self._players[0][0] else self._players[0][0]
 
     def get_winner(self):
         """Returns the name of the winning player."""
@@ -241,7 +240,7 @@ class KubaGame:
 
     def get_captured(self, player_name):
         """Returns the number of Red marbles captured by the given player name. Else, returns None."""
-        player = self._player1 if player_name == self._player1[0] else self._player2
+        player = self._players[0] if player_name == self._players[0][0] else self._players[1]
         return player[1][0]
 
     def get_marble(self, coordinates):
@@ -250,9 +249,9 @@ class KubaGame:
 
     def get_marble_count(self):
         """Returns the number of white, black, and red marbles as a tuple in the order (W,B,R)."""
-        player1_marbles, player2_marbles = self._player1[1][1], self._player2[1][1]
+        player1_marbles, player2_marbles = self._players[0][1][1], self._players[1][1][1]
         total_white = 8 - player1_marbles - player2_marbles
         total_black = player1_marbles + player2_marbles
-        total_red = self._player1_bank[0] + self._player2_bank[0]
+        total_red = self._player_banks[0][0] + self._player_banks[1][0]
 
         return total_white, total_black, total_red
