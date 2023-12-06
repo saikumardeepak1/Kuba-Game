@@ -62,6 +62,8 @@ class KubaGame:
             if player[0] == player_name:
                 return player
 
+        raise ValueError(f"Invalid player name: {player_name}")
+
     def _validate_move(self, player, coordinates, direction):
         """Validate if the move is legal."""
         if not self._validate_player(player):
@@ -76,14 +78,12 @@ class KubaGame:
     def _validate_player(self, player):
         """Validate if it's the correct player's turn."""
         if player[0] != self._current_player:
-            return False
-        return True
+            raise ValueError(f"Invalid move. It's not {player[0]}'s turn.")
 
     def _validate_coordinates(self, row, column):
         """Validate if the coordinates are within the board."""
-        if not 0 <= row <= 6 or not 0 <= column <= 6:
-            return False
-        return True
+        if not (0 <= row <= 6 and 0 <= column <= 6):
+            raise ValueError("Invalid coordinates. Coordinates must be within the range (0,0) to (6,6).")
 
     def _validate_direction(self, row, column, direction):
         """Validate if the direction of the player's move is valid."""
@@ -91,17 +91,16 @@ class KubaGame:
 
         if direction == "F" and backward != 7:
             if row == 0 or self._board[backward][column] != "X":
-                return False
+                raise ValueError("Invalid move.")
         elif direction == "B" and forward != -1:
             if row == 6 or self._board[forward][column] != "X":
-                return False
+                raise ValueError("Invalid move.")
         elif direction == "R" and left != -1:
             if column == 6 or self._board[row][left] != "X":
-                return False
+                raise ValueError("Invalid move.")
         elif direction == "L" and right != 7:
             if column == 0 or self._board[row][right] != "X":
-                return False
-        return True
+                raise ValueError("Invalid move.")
 
     def _perform_move(self, row, column, direction, player_marble):
         """Perform the move and return the move, end index, and captured marble."""
@@ -233,6 +232,7 @@ class KubaGame:
     def _switch_turn(self):
         """Switch the turn to the next player."""
         self._current_player = self._players[1][0] if self._current_player == self._players[0][0] else self._players[0][0]
+        raise ValueError("Invalid move. Failed to switch turn.")
 
     def get_winner(self):
         """Returns the name of the winning player."""
