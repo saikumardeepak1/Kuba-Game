@@ -2,7 +2,13 @@ class KubaGame:
     """Represents a KubaGame object with game mechanics."""
 
     def __init__(self, player1, player2):
-        """Creates a KubaGame with players, a board, and a marble count."""
+        """
+        Creates a KubaGame with players, a board, and a marble count.
+
+        Parameters:
+        - player1 (tuple): Information about the first player (name, marbles).
+        - player2 (tuple): Information about the second player (name, marbles).
+        """
         self._players = [player1, player2]
         self._player_banks = [[0, 0], [0, 0]]
         self._current_player, self._board = None, [
@@ -29,11 +35,24 @@ class KubaGame:
             self._current_player = player_name
 
     def get_current_turn(self):
-        """Returns the player name whose turn it is. Otherwise, returns None if no player has made the first move."""
+        """
+        Returns the player name whose turn it is.
+        Otherwise, returns None if no player has made the first move.
+        """
         return self._current_player
 
     def make_move(self, player_name, coordinates, direction):
-        """Makes a move on the board through user input validation."""
+        """
+        Makes a move on the board through user input validation.
+
+        Parameters:
+        - player_name (str): The name of the player making the move.
+        - coordinates (tuple): The coordinates (row, column) of the move.
+        - direction (str): The direction of the move ("F", "B", "L", "R").
+
+        Returns:
+        - bool: True if the move is successful, False otherwise.
+        """
         self._set_current_player(player_name)
 
         player, player_marble = self._get_player_info(player_name)
@@ -121,12 +140,10 @@ class KubaGame:
     def _make_forward_move(self, row, column, board_column, player_marble):
         """Make forward move and return the move, end index, and captured marble."""
         move, end_index, captured_marble = [], None, None
-
         for square in range(row, -1, -1):
             if board_column[square] == "X":
                 end_index = square
                 break
-
         if end_index is not None:
             move = ["X"] + move + [board_column[square] for square in range(len(board_column) - 1, -1, -1) if square != end_index]
         else:
@@ -140,12 +157,10 @@ class KubaGame:
     def _make_backward_move(self, row, column, board_column, player_marble):
         """Make backward move and return the move, end index, and captured marble."""
         move, end_index, captured_marble = [], None, None
-
         for square in range(row, len(board_column)):
             if board_column[square] == "X":
                 end_index = square
                 break
-
         if end_index is not None:
             move = ["X"] + move + [board_column[square] for square in range(len(board_column)) if square != end_index]
         else:
@@ -159,12 +174,10 @@ class KubaGame:
     def _make_left_move(self, row, column, board_row, player_marble):
         """Make left move and return the move."""
         move, end_index = [], None
-
         for square in range(column, -1, -1):
             if board_row[square] == "X":
                 end_index = square
                 break
-
         if end_index is not None:
             move = ["X"] + move + [board_row[square] for square in range(len(board_row) - 1, -1, -1) if square != end_index]
         else:
@@ -178,12 +191,10 @@ class KubaGame:
     def _make_right_move(self, row, column, board_row, player_marble):
         """Make right move and return the move."""
         move, end_index = [], None
-
         for square in range(column, len(board_row)):
             if board_row[square] == "X":
                 end_index = square
                 break
-
         if end_index is not None:
             move = move + [board_row[square] for square in range(len(board_row)) if square != end_index] + ["X"]
         else:
@@ -247,7 +258,10 @@ class KubaGame:
         return self._winner
 
     def get_captured(self, player_name):
-        """Returns the number of Red marbles captured by the given player name. Else, returns None."""
+        """
+        Returns the number of Red marbles captured by the given player name.
+        Else, returns None.
+        """
         player = self._players[0] if player_name == self._players[0][0] else self._players[1]
         return player[1][0]
 
@@ -256,7 +270,9 @@ class KubaGame:
         return self._board[coordinates[0]][coordinates[1]]
 
     def get_marble_count(self):
-        """Returns the number of white, black, and red marbles as a tuple in the order (W,B,R)."""
+        """
+        Returns the number of white, black, and red marbles as a tuple in the order (W,B,R).
+        """
         player1_marbles, player2_marbles = self._players[0][1][1], self._players[1][1][1]
         total_white = 8 - player1_marbles - player2_marbles
         total_black = player1_marbles + player2_marbles
