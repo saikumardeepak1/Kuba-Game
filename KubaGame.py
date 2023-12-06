@@ -121,10 +121,12 @@ class KubaGame:
     def _make_forward_move(self, row, column, board_column, player_marble):
         """Make forward move and return the move, end index, and captured marble."""
         move, end_index, captured_marble = [], None, None
+
         for square in range(row, -1, -1):
             if board_column[square] == "X":
                 end_index = square
                 break
+
         if end_index is not None:
             move = ["X"] + move + [board_column[square] for square in range(len(board_column) - 1, -1, -1) if square != end_index]
         else:
@@ -138,10 +140,12 @@ class KubaGame:
     def _make_backward_move(self, row, column, board_column, player_marble):
         """Make backward move and return the move, end index, and captured marble."""
         move, end_index, captured_marble = [], None, None
+
         for square in range(row, len(board_column)):
             if board_column[square] == "X":
                 end_index = square
                 break
+
         if end_index is not None:
             move = ["X"] + move + [board_column[square] for square in range(len(board_column)) if square != end_index]
         else:
@@ -155,10 +159,12 @@ class KubaGame:
     def _make_left_move(self, row, column, board_row, player_marble):
         """Make left move and return the move."""
         move, end_index = [], None
+
         for square in range(column, -1, -1):
             if board_row[square] == "X":
                 end_index = square
                 break
+
         if end_index is not None:
             move = ["X"] + move + [board_row[square] for square in range(len(board_row) - 1, -1, -1) if square != end_index]
         else:
@@ -172,10 +178,12 @@ class KubaGame:
     def _make_right_move(self, row, column, board_row, player_marble):
         """Make right move and return the move."""
         move, end_index = [], None
+
         for square in range(column, len(board_row)):
             if board_row[square] == "X":
                 end_index = square
                 break
+
         if end_index is not None:
             move = move + [board_row[square] for square in range(len(board_row)) if square != end_index] + ["X"]
         else:
