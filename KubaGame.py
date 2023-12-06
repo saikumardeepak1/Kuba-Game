@@ -1,15 +1,11 @@
 class KubaGame:
     """Represents a KubaGame object with game mechanics."""
 
-    def __init__(self, player1, player2):
+    def __init__(self):
         """
         Creates a KubaGame with players, a board, and a marble count.
-
-        Parameters:
-        - player1 (tuple): Information about the first player (name, marbles).
-        - player2 (tuple): Information about the second player (name, marbles).
         """
-        self._players = [player1, player2]
+        self._players = [None, None]
         self._player_banks = [[0, 0], [0, 0]]
         self._current_player, self._board = None, [
             ["W", "W", "X", "X", "X", "B", "B"],
@@ -24,6 +20,17 @@ class KubaGame:
         self._winner = None
         self._initialize_prev_boards()
 
+    def set_players(self, player1, player2):
+        """
+        Set player information for Player 1 and Player 2.
+
+        Parameters:
+        - player1 (tuple): Information about the first player (name, marbles).
+        - player2 (tuple): Information about the second player (name, marbles).
+        """
+        self._players = [player1, player2]
+        self._current_player = player1[0]  # Set the initial player turn
+
     def _initialize_prev_boards(self):
         """Initialize previous boards for both players."""
         self._prev_boards[0] = [row[:] for row in self._board]
@@ -34,26 +41,27 @@ class KubaGame:
         if self._current_player is None:
             self._current_player = player_name
 
-    def get_current_turn(self):
-        """
-        Returns the player name whose turn it is.
-        Otherwise, returns None if no player has made the first move.
-        """
+    def _get_current_player(self):
+        """Get the current player's name."""
         return self._current_player
 
-    def make_move(self, player_name, coordinates, direction):
+    def make_move(self, coordinates, direction):
         """
         Makes a move on the board through user input validation.
 
         Parameters:
-        - player_name (str): The name of the player making the move.
         - coordinates (tuple): The coordinates (row, column) of the move.
         - direction (str): The direction of the move ("F", "B", "L", "R").
 
         Returns:
         - bool: True if the move is successful, False otherwise.
         """
-        self._set_current_player(player_name)
+        if self._players[0] is None or self._players[1] is None:
+            print("Error: Players are not set. Use set_players method to set player information.")
+            return False
+
+        player_name = self._get_current_player()
+        player, player_marble = self._get_player_info(player_name)
 
         player, player_marble = self._get_player_info(player_name)
         if not self._validate_move(player, coordinates, direction):
@@ -95,10 +103,10 @@ class KubaGame:
         return True
 
     def _validate_player(self, player):
-        """Validate if it's the correct player's turn."""
-        if player[0] != self._current_player:
-            raise ValueError(f"Invalid move. It's not {player[0]}'s turn.")
-
+      """Validate if it's the correct player's turn."""
+      if player[0] != self._current_player:
+          print("it's your turn")
+            
     def _validate_coordinates(self, row, column):
         """Validate if the coordinates are within the board."""
         if not (0 <= row <= 6 and 0 <= column <= 6):
@@ -280,31 +288,30 @@ class KubaGame:
 
         return total_white, total_black, total_red
     def play_game(self):
-        """Start and manage the Kuba game."""
-        print("\nWelcome to Kuba!")
-        self._print_board()
+      """Start and manage the Kuba game."""
+      print("\nWelcome to Kuba!")
+      self._print_board()
 
-        while not self._winner:
-            self._print_player_turn()
-            self._print_marble_count()
+      while not self._winner:
+          self._print_player_turn()
+          self._print_marble_count()
 
-            try:
-                player_name = self.get_current_turn()
-                coordinates = tuple(map(int, input("Enter coordinates (row, column): ").split(',')))
-                direction = input("Enter direction (F/B/L/R): ").upper()
+          try:
+              player_name = self._get_current_player()
+              coordinates = tuple(map(int, input("Enter coordinates (row, column): ").split(',')))
+              direction = input("Enter direction (F/B/L/R): ").upper()
 
-                move_successful = self.make_move(player_name, coordinates, direction)
-                self._print_feedback(move_successful)
+              move_successful = self.make_move(coordinates, direction)  # Remove player_name argument
+              self._print_feedback(move_successful)
 
-                if move_successful:
-                    self._print_board()
-                    self._print_captured(player_name)
+              if move_successful:
+                  self._print_board()
+                  self._print_captured(player_name)
 
-            except ValueError as e:
-                print(f"Error: {e}. Please try again.")
+          except ValueError as e:
+              print(f"Error: {e}. Please try again.")
 
-        self._print_winner()
-
+      self._print_winner()
     def _print_board(self):
         """Print the current state of the game board."""
         print("\nCurrent Board:")
@@ -340,11 +347,13 @@ class KubaGame:
         else:
             print("Invalid move. Please try again.")
 
-
 if __name__ == "__main__":
-    player1 = ("Player1", ["White", 8])  # existing code
-    player2 = ("Player2", ["Black", 8])  # existing code
-    game = KubaGame(player1, player2)
+    game = KubaGame()
+    
+    player1 = ("Player1", ["White", 8])
+    player2 = ("Player2", ["Black", 8])
+    
+    game.set_players(player1, player2)
     game.play_game()
 
     
